@@ -38,13 +38,7 @@ class Player(pygame.sprite.Sprite):
         #default
         self.facing = 'down'
         
-        #image_to_load = pygame.image.load("img/single.png")
         self.image = self.game.character_spritesheet.get_sprite(3, 2, self.width, self.height)
-        #self.image = pygame.Surface([self.width, self.height])
-        #make the specified color transparent
-        #self.image.set_colorkey(BLACK)
-        #instead of fill image as RED, we use blit function to display image
-        #self.image.blit(image_to_load, (0, 0))
         
         #the hit box
         self.rect = self.image.get_rect()
@@ -55,7 +49,9 @@ class Player(pygame.sprite.Sprite):
         self.movement()
         
         self.rect.x += self.x_change
+        self.collide_blocks('x')
         self.rect.y += self.y_change
+        self.collide_blocks('y')
         
         self.x_change = 0
         self.y_change = 0
@@ -75,6 +71,24 @@ class Player(pygame.sprite.Sprite):
             self.y_change += PLAYER_SPEED
             self.facing = 'down'
             
+    def collide_blocks(self, direction):
+        if direction == "x":
+            #the 3 parameter is to delete sprite if it is True
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            if hits:
+                if self.x_change > 0:
+                    self.rect.x = hits[0].rect.left - self.rect.width
+                if self.x_change < 0:
+                    self.rect.x = hits[0].rect.right
+        
+        if direction == "y":
+            hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
+            if hits:
+                if self.y_change > 0:
+                    self.rect.y = hits[0].rect.top - self.rect.height
+                if self.y_change < 0:
+                    self.rect.y = hits[0].rect.bottom
+            
 class Block(pygame.sprite.Sprite):
     def __init__(self, game, x ,y):
         
@@ -89,8 +103,6 @@ class Block(pygame.sprite.Sprite):
         self.height = TILESIZE
         
         self.image = self.game.terrain_spritesheet.get_sprite(960, 448, self.width, self.height)
-        #self.image = pygame.Surface([self.width, self.height])
-        #self.image.fill(BLUE)
         
         self.rect = self.image.get_rect()
         self.rect.x = self.x
