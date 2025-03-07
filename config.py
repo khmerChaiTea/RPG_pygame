@@ -3,8 +3,30 @@ WIN_HEIGHT = 480
 TILESIZE = 32
 FPS = 60
 
-PLAYER_LAYER = 1
+PLAYER_LAYER = 2
+BLOCK_LAYER = 1
+
 PLAYER_SPEED = 4
 
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
+
+#a list used to make tile map; 480/32 = 15, 640/32 = 20
+tilemap = [
+    'BBBBBBBBBBBBBBBBBBBB',
+    'B..................B',
+	'B..................B',
+	'B....BBB...........B',
+	'B..................B',
+	'B........P.........B',
+	'B..................B',
+	'B..................B',
+	'B.....BBB..........B',
+	'B.......B..........B',
+	'B.......B..........B',
+	'B..................B',
+	'B..................B',
+	'B..................B',
+	'BBBBBBBBBBBBBBBBBBBB',
+]

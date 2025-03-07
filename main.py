@@ -12,6 +12,17 @@ class Game:
         self.clock =  pygame.time.Clock()
         # self.font = pygame.font.Font('Arial, 32')
         self.running = True
+        
+    #create a method for efficiency
+    def createTilemap(self):
+        #enumerate creates a tuple (position) of a item
+        for i, row in enumerate(tilemap):
+            for j, column in enumerate(row):
+                if column == "B":
+                    #j column is x pos and i row is y pos
+                    Block(self, j, i)
+                if column == "P":
+                    Player(self, j, i)
     
     def new(self):
         #a new game starts
@@ -24,8 +35,7 @@ class Game:
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
         
-        #looking at Player() in sprite.py, self is omitted and game is replaced by 'self' followed by (x, y)
-        self.player = Player(self, 1, 2)
+        self.createTilemap()
         
     def events(self):
         #game loop events
