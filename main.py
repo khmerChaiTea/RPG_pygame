@@ -13,11 +13,15 @@ class Game:
         # self.font = pygame.font.Font('Arial, 32')
         self.running = True
         
+        self.character_spritesheet = Spritesheet('img/character.png')
+        self.terrain_spritesheet = Spritesheet('img/terrain.png')
+        
     #create a method for efficiency
     def createTilemap(self):
         #enumerate creates a tuple (position) of a item
         for i, row in enumerate(tilemap):
             for j, column in enumerate(row):
+                Ground(self, j ,i)
                 if column == "B":
                     #j column is x pos and i row is y pos
                     Block(self, j, i)
