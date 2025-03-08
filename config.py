@@ -14,8 +14,8 @@ ENEMY_SPEED = 2
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
 BLUE = (0, 0, 255)
+WHITE = (255, 255, 255)
 
-#a list used to make tile map; 480/32 = 15, 640/32 = 20
 tilemap = [
     'BBBBBBBBBBBBBBBBBBBB',
     'B..E...............B',

@@ -3,27 +3,22 @@ from config import *
 import math
 import random
 
-#create a class sprite sheet for efficiency, w/o inheritance
 class Spritesheet:
     def __init__(self, file):
         self.sheet = pygame.image.load(file).convert()
         
     def get_sprite(self, x, y, width, height):
-        #width and height specified (32 x 32)
         sprite = pygame.Surface([width, height])
         sprite.blit(self.sheet, (0, 0), (x, y, width, height))
         sprite.set_colorkey(BLACK)
         return sprite
 
-#pygame.sprite.Sprite - a class that makes it easy to create sprites
 class Player(pygame.sprite.Sprite):
     def __init__(self, game, x, y):
         
         self.game = game
-        #differentiate layers
         self._layer = PLAYER_LAYER
         self.groups = self.game.all_sprites
-        #call the init method in the inherited class - adding player to the group
         pygame.sprite.Sprite.__init__(self, self.groups)
         
         self.x = x * TILESIZE
@@ -31,17 +26,14 @@ class Player(pygame.sprite.Sprite):
         self.width = TILESIZE
         self.height = TILESIZE
         
-        #these are temp var of change in movement during a loop
         self.x_change = 0
         self.y_change = 0
         
-        #default
         self.facing = 'down'
         self.animation_loop = 1
         
         self.image = self.game.character_spritesheet.get_sprite(3, 2, self.width, self.height)
         
-        #the hit box
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
@@ -63,7 +55,6 @@ class Player(pygame.sprite.Sprite):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_LEFT] or keys[pygame.K_a]:
             for sprite in self.game.all_sprites:
-                #move sprites right and player left
                 sprite.rect.x += PLAYER_SPEED
             self.x_change -= PLAYER_SPEED
             self.facing = 'left'
@@ -86,13 +77,11 @@ class Player(pygame.sprite.Sprite):
     def collide_enemy(self):
             hits = pygame.sprite.spritecollide(self, self.game.enemies, False)
             if hits:
-                #removed player from all sprite group
                 self.kill()
                 self.game.playing = False
             
     def collide_blocks(self, direction):
         if direction == "x":
-            #the 3 parameter is to delete sprite if it is True
             hits = pygame.sprite.spritecollide(self, self.game.blocks, False)
             if hits:
                 if self.x_change > 0:
@@ -127,10 +116,8 @@ class Player(pygame.sprite.Sprite):
         
         if self.facing == "down":
             if self.y_change == 0:
-                #default stand there if no changes
                 self.image = self.game.character_spritesheet.get_sprite(3, 2, self.width, self.height)
             else:
-                #every 10 frames animation loop changes
                 self.image = down_animations[math.floor(self.animation_loop)]
                 self.animation_loop += 0.1
                 if self.animation_loop >= 3:
@@ -277,3 +264,33 @@ class Ground(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = self.x
         self.rect.y = self.y
+        
+class Button:
+    def __init__(self, x, y, width, height, fg, bg, content, fontsize):
+        self.font = pygame.font.Font('arial.ttf', fontsize)
+        self.content = content
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        
+        self.fg = fg
+        self.bg =bg
+        
+        self.image = pygame.Surface((self.width, self.height))
+        self.image.fill(self.bg)
+        self.rect = self.image.get_rect()
+        
+        self.rect.x = self.x
+        self.rect.y = self.y
+        
+        self.text = self.font.render(self.content, True, self.fg)
+        self.text_rect = self.text.get_rect(center = (self.width / 2,  self. height / 2))
+        self.image.blit(self.text, self.text_rect)
+        
+    def is_pressed(self, pos, pressed):
+        if self.rect.collidepoint(pos):
+            if pressed[0]:
+                return True
+            return False
+        return False

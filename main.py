@@ -8,37 +8,30 @@ class Game:
     def __init__(self):
         pygame.init()
         self.screen = pygame.display.set_mode((WIN_WIDTH, WIN_HEIGHT))
-        #framerate -  usually 60
         self.clock =  pygame.time.Clock()
-        # self.font = pygame.font.Font('Arial, 32')
         self.running = True
+        self.font = pygame.font.Font('arial.ttf', 32)
         
         self.character_spritesheet = Spritesheet('img/character.png')
         self.terrain_spritesheet = Spritesheet('img/terrain.png')
         self.enemy_spritesheet = Spritesheet('img/enemy.png')
+        self.intro_background = pygame.image.load('img/introbackground.png')
         
-    #create a method for efficiency
     def createTilemap(self):
-        #enumerate creates a tuple (position) of a item
         for i, row in enumerate(tilemap):
             for j, column in enumerate(row):
                 Ground(self, j ,i)
                 if column == "B":
-                    #j column is x pos and i row is y pos
                     Block(self, j, i)
                 if column == "E":
-                    #j column is x pos and i row is y pos
                     Enemy(self, j, i)
                 if column == "P":
                     Player(self, j, i)
     
     def new(self):
-        #a new game starts
         self.playing = True
         
-        #a group of sprites
         self.all_sprites = pygame.sprite.LayeredUpdates()
-        #walls
         self.blocks = pygame.sprite.LayeredUpdates()
         self.enemies = pygame.sprite.LayeredUpdates()
         self.attacks = pygame.sprite.LayeredUpdates()
@@ -46,7 +39,6 @@ class Game:
         self.createTilemap()
         
     def events(self):
-        #game loop events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.playing = False
@@ -54,23 +46,18 @@ class Game:
                 
         
     def update(self):
-        #game loop update
         self.all_sprites.update()
         
     def draw(self):
-        #game loop draw
         self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
         self.clock.tick(FPS)
         pygame.display.update()
         
     def main(self):
-        #game loop; while True call...
         while self.playing:
-            #key press event
             self.events()
             self.update()
-            #display sprites
             self.draw()
         self.running = False
         
@@ -78,9 +65,31 @@ class Game:
         pass
         
     def intro_screen(self):
-        pass
+        intro = True
+        
+        title = self.font.render('RPG with Pygame', True, BLACK)
+        title_rect = title.get_rect(x = 10, y = 10)
+        
+        play_button = Button(10, 50, 100, 50, WHITE, BLACK, 'Play', 32)
+        
+        while intro:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    intro = False
+                    self.running = False
+            
+            mouse_pos = pygame.mouse.get_pos()
+            mouse_pressed = pygame.mouse.get_pressed()
+            
+            if play_button.is_pressed(mouse_pos, mouse_pressed):
+                intro = False
+            
+            self.screen.blit(self.intro_background, (0, 0))
+            self.screen.blit(title, title_rect)
+            self.screen.blit(play_button.image, play_button.rect)
+            self.clock.tick(FPS)
+            pygame.display.update()
     
-#convert class into an object
 g = Game()
 g.intro_screen()
 g.new()
